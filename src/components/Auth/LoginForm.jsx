@@ -11,22 +11,32 @@ import useLogin from "../../hooks/useLogin";
 import mayrahkeeIcon from "../../assets/pngs/mayrakee-icon.png";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import HowItWorksSlider from "./HowItWorksSlider";
+<<<<<<< HEAD
 import { toast } from "react-toastify";
 
 function LoginForm({ rememberMe, toogleRememberMe }) {
   const [role, setRole] = useState(null);
+=======
+
+function LoginForm({ rememberMe, toogleRememberMe }) {
+  const [role, setRole] = useState();
+>>>>>>> 10d797cd6ff8aa129207f9c089b161e15aab3e28
   const navigate = useNavigate();
   const { loginDetails, loginUser, loading, onTextChange } = useLogin(role);
   const [showPassword, setShowPassword] = useState(false);
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
+<<<<<<< HEAD
     if(!role) return toast.error("Please select a role to continue");
+=======
+>>>>>>> 10d797cd6ff8aa129207f9c089b161e15aab3e28
     loginUser(() => {
       onSuccess({
         message: "Login Successful",
         success: "Continuing to dashboard",
       });
+<<<<<<< HEAD
       switch (role) {
         case "candidate":
           navigate("/applicant");
@@ -42,6 +52,14 @@ function LoginForm({ rememberMe, toogleRememberMe }) {
         default:
           navigate("/staff");
           break;
+=======
+      if (role === "candidate") {
+        navigate("/applicant");
+      } else if (role == "employer") {
+        navigate("/company");
+      } else {
+        navigate("/staff");
+>>>>>>> 10d797cd6ff8aa129207f9c089b161e15aab3e28
       }
     });
   };
@@ -67,6 +85,7 @@ function LoginForm({ rememberMe, toogleRememberMe }) {
           Explore/manage job different job oppurtunities
         </span>
         <div className="grid grid-cols-2 w-full md:mt-10 gap-[10px] text-sm font-semibold">
+<<<<<<< HEAD
         <button
             onClick={() => setRole("admin")}
             className={`px-2 py-1 text-little ${
@@ -77,6 +96,8 @@ function LoginForm({ rememberMe, toogleRememberMe }) {
           >
             Admin
           </button>
+=======
+>>>>>>> 10d797cd6ff8aa129207f9c089b161e15aab3e28
           <button
             onClick={() => setRole("candidate")}
             className={`px-2 py-1 text-little ${
@@ -107,7 +128,10 @@ function LoginForm({ rememberMe, toogleRememberMe }) {
           >
             Artisan
           </button>
+<<<<<<< HEAD
           
+=======
+>>>>>>> 10d797cd6ff8aa129207f9c089b161e15aab3e28
           <button
             onClick={() => setRole("staff")}
             className={`px-2 py-1 text-little ${

@@ -72,11 +72,10 @@ function useApplicationManagement() {
       setLoading(false);
     }
   };
-  
   const getCompany = async (employerId, setEmployer) => {
     setLoading(true);
     try {
-      const response =  client.get(`/employer/getEmployer/${employerId}`);
+      const response = await client(`/employer/getEmployer/${employerId}`);
       setEmployer(response.data.details);
     } catch (error) {
       FormatError(error, setError, "Applicants Error");

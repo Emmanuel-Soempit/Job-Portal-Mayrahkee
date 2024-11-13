@@ -8,7 +8,11 @@ import { clear } from "idb-keyval";
 import { ApplicantRouteContextProvider } from "../context/ApplicantRouteContext";
 import { ref, set } from "firebase/database";
 import { database } from "../utils/firebase";
-
+import StaffInformation from "../staff-module/pages/verifications/StaffInformation";
+import CartedStaffs from "../components/staffs/CartedStaffs";
+import ApplicantDetails from "../components/applicant-details-ui/ApplicantDetails";
+import AllApplication from "../components/applicant-details-ui/AllApplication";
+import Application from "../components/applicant-details-ui/Application";
 //Util Components
 const NavBar = lazy(() => import("../applicant-module/components/NavBar"));
 const SideBar = lazy(() => import("../applicant-module/components/SideBar"));
@@ -40,6 +44,17 @@ const PublicProfile = lazy(() =>
 const MyResume = lazy(() =>
   import("../applicant-module/pages/resume/MyResume")
 );
+
+const Artisan = lazy(() =>
+  import("../applicant-module/pages/artisan/Artisan")
+);
+const DomesticStaffs = lazy(() =>
+  import("../applicant-module/pages/staffs/DomesticStaffs")
+);
+const SuccessPage=lazy(() =>
+  import("../components/SuccessPage")
+);
+
 const ShortListedDetails = lazy(() =>
   import("../applicant-module/pages/shortlisted/ShortListedDetails")
 );
@@ -69,7 +84,7 @@ function useApplicantRoute() {
 
     const onlineStatusRef = ref(
       database,
-      "online-status/" + `candidate-${authDetails.user.id}`
+      "online-status/" + `candidate-${authDetails?.user.id}`
     );
 
     const handleUnload = () => {
@@ -85,7 +100,6 @@ function useApplicantRoute() {
       timeStamp: new Date().toDateString(),
     });
 
-
     window.addEventListener("unload", handleUnload);
 
     return () => {
@@ -94,7 +108,7 @@ function useApplicantRoute() {
     };
   }, []);
 
-  return authDetails.user.role === "candidate" ? (
+  return authDetails?.user.role === "candidate" ? (
     <ApplicantRouteContextProvider setSideBar={setSideBar}>
       <main className="h-screen w-screen  flex">
         <ResourceContextProvider>
@@ -152,6 +166,23 @@ function useApplicantRoute() {
                   path="browse-companies/:id"
                   element={<CompanyDetails />}
                 />
+
+                <Route path="artisan" element={<Artisan />} />
+                <Route path="domestic-staffs" element={<DomesticStaffs />} />
+                
+                {/* testing routes */}
+                <Route path="success" element={<SuccessPage />} />
+                <Route path="applicant-detail" element={<ApplicantDetails />} />
+                <Route path="application-detail" element={<AllApplication />} />
+                <Route path="application-detail/:id" element={<Application />} />
+
+
+                <Route
+                  path="staff/:category/:id"
+                  element={<StaffInformation />}
+                />
+                <Route path="staff/cart" element={<CartedStaffs />} />
+
                 <Route path="public-profile" element={<PublicProfile />} />
                 <Route path="setting" element={<Settings />} />
                 <Route path="my-resume" element={<MyResume />} />

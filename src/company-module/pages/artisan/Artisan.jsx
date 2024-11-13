@@ -5,7 +5,7 @@ import { axiosClient } from "../../../services/axios-client";
 import { AuthContext } from "../../../context/AuthContex";
 import { onFailure } from "../../../utils/notifications/OnFailure";
 import SearchComponent from "../../../components/staffs/SearchComponent";
-import { FaExclamationCircle } from "react-icons/fa";
+import { FaExclamationCircle,FaShoppingCart } from "react-icons/fa";
 import { MdClose } from "react-icons/md";
 import StaffCard from "../../../components/staffs/StaffCard";
 import { useNavigate } from "react-router-dom";
@@ -20,17 +20,22 @@ function Artisan() {
   const [searchResult, setSearcResult] = useState([]);
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
-  const [conditions, setConditions] = useState(true);
+  const [conditions, setConditions] = useState(false);
+  const [queryParams, setQueryParams] = useState();
 
-  const handleQuerySubmit = async (queryParams) => {
+  const handleQuerySubmit = async (directParams) => {
+    setLoading(true);
     try {
-      if (!queryParams) throw new Error("No Query option selected");
+      if (!queryParams && !directParams) throw new Error("No Query option selected");
+
+      const dataToPost = (directParams && typeof directParams !== 'undefined') ? directParams : queryParams
       const { data } = await client.get(
-        `/domesticStaff/get-staff?staff_category=artisan&${queryParams}`
+        `/domesticStaff/get-staff?staff_category=artisan&${dataToPost}`
       );
       console.log(data);
       setSearcResult(data.domesticStaff);
     } catch (error) {
+      console.log(error)
       onFailure({
         message: "Artisan Error",
         error: "Failed to retrieve items/query is empty",
@@ -38,8 +43,20 @@ function Artisan() {
       setSearcResult([]);
     } finally {
       setLoading(false);
+      setConditions(false)
     }
   };
+
+
+  const handleCondition = (data, hasCategory) => {
+    if(hasCategory){
+      console.log('Data', data)
+      setConditions(true)
+      setQueryParams(data)
+    } else{
+      handleQuerySubmit(data)
+    }
+  }
 
   const navigateToStaff = (data) =>
     navigate(`/company/staff/${categories.name}/${data.id}`, {
@@ -48,14 +65,14 @@ function Artisan() {
 
   const navigateToCart = () =>
     navigate(`/company/staff/cart`, {
-      state: { data: { items: cartItems, category: categories } },
+      state: { data: { items: cartItems, category: categories, type: 'artisan' } },
     });
 
   const staffsToDisplay =
     searchResult.length > 0
       ? searchResult?.filter(
           (current) =>
-            current?.staff_category === "staff" && current?.middle_name !== null
+            current?.staff_category === "artisan" && current?.middle_name !== null
         )
       : [];
 
@@ -65,7 +82,13 @@ function Artisan() {
         user_id: authDetails.user.id,
         user_type: authDetails.user.role,
       });
-      setCartItems(data.cart_items);
+      if (data.cart_items) {
+        setCartItems(
+          data.cart_items.filter(
+            (current) => current.domestic_staff.staff_category === "artisan"
+          )
+        );
+      }
     } catch (error) {
       onFailure({
         message: "soemthing went wrong",
@@ -99,28 +122,29 @@ function Artisan() {
   return (
     <>
       <PopUpBox isOpen={conditions}>
-        <div className="w-[40%] h-fit text-gray-500 p-5 items-center flex flex-col gap-4 bg-white">
+        <div className="w-[90%] md:w-[40%] md:h-fit text-gray-500 p-5 items-center flex flex-col gap-4 bg-white">
+      
           <MdClose
             className="text-2xl place-self-end cursor-pointer"
             onClick={() => setConditions(!conditions)}
           />
           <h1>Terms for compliance</h1>
           <p className="text-sm">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Aperiam
-            quae dolor cum maxime suscipit unde nisi quas incidunt,
-            perspiciatis, repellendus ipsam sequi asperiores, id aspernatur
-            ducimus rem. Porro, quibusdam vel. Lorem ipsum dolor sit amet
-            consectetur, adipisicing elit. Excepturi, doloribus aspernatur.
-            Asperiores, provident porro illo nisi recusandae maxime magni sed
-            temporibus, non repudiandae id vero blanditiis, praesentium sit
-            accusantium assumenda.
+            This agreement acknowledges that the employer may only assign tasks
+            that are directly related to the designated role of the employee.
+            Artisan must only perform duties as outlined within the scope of
+            their specific role, whether as a housekeeper, driver, or other
+            position. Any tasks outside these roles require mutual agreement
+            between the employer and the employee. Violation of this policy may
+            result in a breach of contract or legal consequences, depending on
+            applicable labor laws.
           </p>
-          <FormButton>Confirm and Search</FormButton>
+          <FormButton onClick={() => handleQuerySubmit()} loading={loading}>Confirm and Search</FormButton>
         </div>
       </PopUpBox>
-      <div className="h-full w-full flex flex-col px-12 py-2 gap-[15px]">
-        <div className="flex w-full justify-between items-center">
-          <div className="flex flex-col gap-2 bg-green-100 pr-5 p-2 w-fit">
+   <div className="h-full w-full flex flex-col px-5 md:px-8 lg:px-12 py-2 gap-[15px]">
+        <div className="flex w-full justify-between items-center gap-1">
+          <div className="flex flex-col gap-2 bg-green-100 pr-5 p-2 w-[90%] md:w-fit text-xs md:text-sm">
             <div className="flex w-full justify-between items-center">
               <span className="flex gap-2 items-center text-green-700">
                 Welcome to our artisan hub <FaExclamationCircle />
@@ -138,35 +162,38 @@ function Artisan() {
             </p>
           </div>
 
-          <button
+         <button
             onClick={navigateToCart}
-            className="border p-2 h-fit border-primaryColor text-sm hover:bg-primaryColor hover:text-white"
           >
-            View Carted Staffs
+            <p className="relative cursor-pointer flex item-center"><FaShoppingCart size="24" /> <span className="absolute top-[-15px] right-0 w-max h-max px-1 rounded-full bg-red-700 text-white text-xs">{cartItems.length || 0}</span></p>
           </button>
         </div>
 
         <SearchComponent
           subCategories={categories.subcategories}
-          handleQuerySubmit={handleQuerySubmit}
+          handleQuerySubmit={handleCondition}
         />
 
-        {staffsToDisplay.length > 0 && (
+        {staffsToDisplay.length > 0 ? (
           <div className="flex flex-col gap-3 mt-5">
             <span className="font-semibold text-yellow-600">
               Showing Search You Result
             </span>
-            <ul className="w-full grid grid-cols-3 gap-2">
+           <ul className="w-full grid grid-cols-responsive gap-4">
+          
               {staffsToDisplay?.map((current) => (
                 <StaffCard
                   key={current?.id}
                   data={current}
                   onClick={navigateToStaff}
+                  cartItems={cartItems}
+                  setCartItems={setCartItems}
+                  getCartItems={getCartItems}
                 />
               ))}
             </ul>
           </div>
-        )}
+        ) : <span className="text-md text-red-600 text-center">No Result from this search query</span>}
       </div>
     </>
   );

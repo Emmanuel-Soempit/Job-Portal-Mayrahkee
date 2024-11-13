@@ -320,34 +320,6 @@ export const adminOptions = [
     icon: homeIcon,
     iconActive: homeIconActive,
   },
-  {
-    type: "Guarantors",
-    title: "Gurarantors",
-    route: "/admin/guarantors",
-    icon: homeIcon,
-    iconActive: homeIconActive,
-  },
-  {
-    type: "Medical Histories",
-    title: "Medical Histories",
-    route: "/admin/medical-histories",
-    icon: homeIcon,
-    iconActive: homeIconActive,
-  },
-  {
-    type: "Police Reports",
-    title: "Police Reports",
-    route: "/admin/police-reports",
-    icon: homeIcon,
-    iconActive: homeIconActive,
-  },
-  {
-    type: "Medical Histories",
-    title: "Medical Histories",
-    route: "/admin/medical-histories",
-    icon: homeIcon,
-    iconActive: homeIconActive,
-  },
  
 ];
 
@@ -367,46 +339,13 @@ export const adminnUtilOptions = [
     iconActive: helpIcon,
   },
   {
-    type: "LOG-OUT",
-    title: "Log Out",
-    route: "/",
-    icon: helpIcon,
-    iconActive: helpIcon,
-  },
-];
-
-export const registration_steps_keys = {
-  create_account: {
-    title: "User Registration",
-    desc: "Enter your name, email and password.",
-    activeIcon: PersonActive,
-    inactiveIcon: Person,
-  },
-  email_verification: {
-    title: "Email Verification",
-    desc: "Verify your email address",
-    activeIcon: MessageActive,
-    inactiveIcon: Message,
-  },
-  person_details: {
-    title: "Profile Details",
-    desc: "Provide profile Pictures and job title",
-    activeIcon: PersonCaptured,
-    inactiveIcon: PersonCaptured,
-  },
-  course_details: {
-    title: "Course Details",
-    desc: "Choose your course details and other info",
-    activeIcon: PersonWithBoard,
-    inactiveIcon: PersonWithBoard,
-  },
-  welcome_video: {
+    type: "WELCOME_VIDEO",
     title: "Welcome Video",
     desc: "Start your journey with a Click",
-    activeIcon: Camera,
-    inactiveIcon: Camera,
+    icon: Camera,
+    iconActive: Camera,
   },
-};
+];
 
 export const company_profile_attributes = [
   {
